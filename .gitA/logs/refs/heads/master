@@ -1,0 +1,13 @@
+0000000000000000000000000000000000000000 582bff15969ed6d67b78ccaccf1df4b5c87bfc39 jeff <jeffwatkins2000@gmail.com> 1691995980 +0100	commit (initial): Initialise git
+582bff15969ed6d67b78ccaccf1df4b5c87bfc39 d6e4c757c1c8ac0510065c2d279f55f218984bd4 jeff <jeffwatkins2000@gmail.com> 1692000390 +0100	commit: Widgets ok
+d6e4c757c1c8ac0510065c2d279f55f218984bd4 aaecc0e4770db6099ea5d0fb657d16a1f3a5e8bc jeff <jeffwatkins2000@gmail.com> 1692001217 +0100	commit: kw as namedtuple
+aaecc0e4770db6099ea5d0fb657d16a1f3a5e8bc fb12f50afe33d28b3223cdc2d1ed556177284229 jeff <jeffwatkins2000@gmail.com> 1692001895 +0100	commit: implement FrameBase
+fb12f50afe33d28b3223cdc2d1ed556177284229 446ac2e1c5986d082f1c55e168370ddcd524d194 jeff <jeffwatkins2000@gmail.com> 1692001923 +0100	commit: Implement frameBase
+446ac2e1c5986d082f1c55e168370ddcd524d194 0620cfc7f2fed84027c34d659ce91ae6d030a2e1 jeff <jeffwatkins2000@gmail.com> 1692005088 +0100	commit: Email form working
+0620cfc7f2fed84027c34d659ce91ae6d030a2e1 56500defd289bb4125a999ba354d8cc2e580866b jeff <jeffwatkins2000@gmail.com> 1692013992 +0100	commit: refactor
+56500defd289bb4125a999ba354d8cc2e580866b 1031abd64f9210b6b35afc972971f0c4788fd2e3 jeff <jeffwatkins2000@gmail.com> 1692117127 +0100	commit: Rebate gui complete
+1031abd64f9210b6b35afc972971f0c4788fd2e3 b8ff064f2db04298351f3b867afeffc7e3aaaffb jeff <jeffwatkins2000@gmail.com> 1692124232 +0100	commit: players updated in rebate
+b8ff064f2db04298351f3b867afeffc7e3aaaffb 278dbdedef4eecac646222372180b24353409396 jeff <jeffwatkins2000@gmail.com> 1692208793 +0100	commit: Rebates working
+278dbdedef4eecac646222372180b24353409396 b16f156057d530dbd0a000e230d828622b02bc2f jeff <jeffwatkins2000@gmail.com> 1700146290 +0000	commit: Version 0.0.1
+b16f156057d530dbd0a000e230d828622b02bc2f 1408152ab080f5cba7e58ccdb05f8a648554bda1 Jeff <jeffwatkins2000@gmail.com> 1753541349 +0100	commit: Reorganize for uv
+1408152ab080f5cba7e58ccdb05f8a648554bda1 c0f09ff6fe61e1801242fab4af1c6f14459632f8 Jeff <jeffwatkins2000@gmail.com> 1753541370 +0100	commit: Reorganize for uv

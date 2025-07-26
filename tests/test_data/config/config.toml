@@ -1,0 +1,14 @@
+email_flag_club = 5
+rebate_club = 6
+brought_forward_club = 7
+sessions_club = 8
+carried_forward_club = 9
+quarter_club = 10
+input_dir = /home/jeff/Downloads
+output_dir = "/home/jeff/.local/share/phoenix_player_rebates"
+year_start = 6
+rebate_bbo = 300
+rebate_f2f = 250
+qualifying_attendances = 10
+payment_months = 3
+geometry = {}

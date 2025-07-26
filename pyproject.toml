@@ -1,0 +1,26 @@
+[project]
+name = "attendance-rebates"
+version = "0.1.0"
+description = "Attendance rebates for Phoenix Bridge Club"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "markdown>=3.8",
+    "psi-toml>=0.0.5",
+    "psiconfig>=0.0.13",
+    "psiutils>=0.1.54",
+    "python-dateutil>=2.9.0.post0",
+    "tkinterweb>=4.3.1",
+]
+
+[dependency-groups]
+dev = [
+    'pytest',
+    "python-mock>=0.0.3",
+    "freezegun>=1.5.3",
+    "icecream>=2.1.4",
+]
+
+[build-system]
+requires = ['uv-build']
+build-backend = 'uv_build'

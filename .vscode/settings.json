@@ -1,0 +1,13 @@
+{
+    "window.title": "${rootName}${separator}${activeEditorLong}",
+    "cSpell.words": [
+        "BRIDGEWEBS",
+        "columnspan",
+        "initialdir",
+        "initialfile",
+        "padx",
+        "pady",
+        "postcommand",
+        "relativedelta"
+    ]
+}

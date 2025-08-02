@@ -1,7 +1,8 @@
 """ReportFrame for Phoenix attendance rebates."""
 import tkinter as tk
 from tkinter import ttk
-from tkinter import font as tk_font
+from tkinter import font as tk_font, messagebox
+from clipboard import copy
 
 from psiutils.constants import PAD
 from psiutils.buttons import ButtonFrame, IconButton
@@ -15,6 +16,11 @@ from rebate_process import RebateProcess
 
 FRAME_TITLE = f'{APP_TITLE} - Totals'
 
+BROUGHT_FORWARD = 'Brought forward'
+CARRIED_FORWARD = 'Carried forward'
+
+TOTAL_RECIPIENTS = 'Total recipients'
+TOTAL_REBATE = 'Total rebate'
 
 class ReportFrame():
     def __init__(self, parent: tk.Frame, report: RebateProcess) -> None:
@@ -68,11 +74,11 @@ class ReportFrame():
         period_frame.grid(row=row, column=0, columnspan=2, sticky=tk.EW)
 
         row += 1
-        separator = separator_frame(frame, 'F2')
+        separator = separator_frame(frame, 'F2F')
         separator.grid(row=row, column=0, columnspan=3, sticky=tk.EW)
 
         row += 1
-        label = ttk.Label(frame, text='Brought forward')
+        label = ttk.Label(frame, text=BROUGHT_FORWARD)
         label.grid(row=row, column=0, sticky=tk.E, padx=PAD, pady=PAD)
 
         label = ttk.Label(frame, text=self.report.f2f_bf, width=10,
@@ -80,7 +86,7 @@ class ReportFrame():
         label.grid(row=row, column=1, sticky=tk.W)
 
         row += 1
-        label = ttk.Label(frame, text='Carried forward')
+        label = ttk.Label(frame, text=CARRIED_FORWARD)
         label.grid(row=row, column=0, sticky=tk.E, padx=PAD, pady=PAD)
 
         label = ttk.Label(frame, text=self.report.f2f_cf, width=10,
@@ -88,7 +94,7 @@ class ReportFrame():
         label.grid(row=row, column=1, sticky=tk.W)
 
         row += 1
-        label = ttk.Label(frame, text='Total recipients')
+        label = ttk.Label(frame, text=TOTAL_RECIPIENTS)
         label.grid(row=row, column=0, sticky=tk.E, padx=PAD, pady=PAD)
 
         label = ttk.Label(frame, text=self.report.f2f_recipients, width=10,
@@ -96,7 +102,7 @@ class ReportFrame():
         label.grid(row=row, column=1, sticky=tk.W)
 
         row += 1
-        label = ttk.Label(frame, text='Total rebate (£)')
+        label = ttk.Label(frame, text=f'{TOTAL_REBATE} (£)')
         label.grid(row=row, column=0, sticky=tk.E, padx=PAD, pady=PAD)
 
         label = ttk.Label(frame, text=f'{self.report.f2f_total:.2f}', width=10,
@@ -108,7 +114,7 @@ class ReportFrame():
         separator.grid(row=row, column=0, columnspan=3, sticky=tk.EW)
 
         row += 1
-        label = ttk.Label(frame, text='Brought forward')
+        label = ttk.Label(frame, text=BROUGHT_FORWARD)
         label.grid(row=row, column=0, sticky=tk.E, padx=PAD, pady=PAD)
 
         label = ttk.Label(frame, text=self.report.bbo_bf, width=10,
@@ -116,7 +122,7 @@ class ReportFrame():
         label.grid(row=row, column=1, sticky=tk.W)
 
         row += 1
-        label = ttk.Label(frame, text='Carried forward')
+        label = ttk.Label(frame, text=CARRIED_FORWARD)
         label.grid(row=row, column=0, sticky=tk.E, padx=PAD, pady=PAD)
 
         label = ttk.Label(frame, text=self.report.bbo_cf, width=10,
@@ -124,7 +130,7 @@ class ReportFrame():
         label.grid(row=row, column=1, sticky=tk.W)
 
         row += 1
-        label = ttk.Label(frame, text='Total recipients')
+        label = ttk.Label(frame, text=TOTAL_RECIPIENTS)
         label.grid(row=row, column=0, sticky=tk.E, padx=PAD, pady=PAD)
 
         label = ttk.Label(frame, text=self.report.bbo_recipients, width=10,
@@ -132,7 +138,7 @@ class ReportFrame():
         label.grid(row=row, column=1, sticky=tk.W)
 
         row += 1
-        label = ttk.Label(frame, text='Total rebate ($)')
+        label = ttk.Label(frame, text=f'{TOTAL_REBATE} ($)')
         label.grid(row=row, column=0, sticky=tk.E, padx=PAD, pady=PAD)
 
         label = ttk.Label(frame, text=f'{self.report.bbo_total:.2f}', width=10,
@@ -169,13 +175,31 @@ class ReportFrame():
     def _button_frame(self, master: tk.Frame) -> tk.Frame:
         frame = ButtonFrame(master, tk.HORIZONTAL)
         frame.buttons = [
+            frame.icon_button('copy_clipboard', False, self._copy),
             frame.icon_button('exit', False, self._dismiss)
         ]
         frame.enable(False)
         return frame
 
-    def _process(self, *args) -> None:
-        ...
+    def _copy(self, *args) -> None:
+        sep = '-' * 20
+        rebate_stirling = f'{TOTAL_REBATE} (£)'
+        rebate_dollars = f'{TOTAL_REBATE} ($)'
+        output = [
+            self.date_message.get(),
+            f'{sep} F2F {sep}',
+            f'{BROUGHT_FORWARD:<16} {self.report.f2f_bf:>8}',
+            f'{CARRIED_FORWARD:<16} {self.report.f2f_cf:>8}',
+            f'{TOTAL_RECIPIENTS:<16} {self.report.f2f_recipients:>8}',
+            f'{rebate_stirling:<16} {self.report.f2f_total:>8.2f}',
+            f'{sep} BBO {sep}',
+            f'{BROUGHT_FORWARD:<16} {self.report.bbo_bf:>8}',
+            f'{CARRIED_FORWARD:<16} {self.report.bbo_cf:>8}',
+            f'{TOTAL_RECIPIENTS:<16} {self.report.bbo_recipients:>8}',
+            f'{rebate_dollars:<16} {self.report.bbo_total:>8.2f}',
+        ]
+        copy('\n'.join(output))
+        messagebox.showinfo('', 'Report copied to clipboard')
 
     def _dismiss(self, *args) -> None:
         self.root.destroy()

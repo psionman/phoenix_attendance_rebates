@@ -221,7 +221,7 @@ class EmailFrame():
             Path(self.config.input_dir, self. membership_file.get()),
             Path(period_dir, self.bbo_att_report.get()),
             Path(period_dir, self.bbo_email_output_file.get()),
-            Path(period_dir, 'bbo_payment_file.txt'),
+            Path(period_dir, 'bbo_payment_file.csv'),
         )
         result += EmailProcess(context).create_files()
 

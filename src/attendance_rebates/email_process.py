@@ -96,11 +96,16 @@ class EmailProcess():
             return False
 
     def _create_bbo_payment_file(self, members) -> None:
-        payments = []
-        for member in members. values():
-            payments.append(f'"{member['BBOUSERNAME']}", "{member['CLUB6']}"')
-        with open(self.context.bbo_payment_file, 'w') as f_payments:
-            f_payments.write('\n'.join(payments))
+        payments = [(member['BBOUSERNAME'], member['CLUB6'])
+                    for member in members. values()]
+        payments.sort(key=lambda item: item[0])
+        payments.sort(key=lambda item: item[1])
+
+        output = [f'{item[0]}, {item[1]}' for item in payments]
+
+        path = self.context.bbo_payment_file
+        with open(path, 'w', encoding='utf-8') as f_payments:
+            f_payments.write('\n'.join(output))
 
     def _get_members_with_rebate(self, members, rebates):
         rebate_members = {}

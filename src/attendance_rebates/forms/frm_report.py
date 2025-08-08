@@ -175,19 +175,19 @@ class ReportFrame():
     def _button_frame(self, master: tk.Frame) -> tk.Frame:
         frame = ButtonFrame(master, tk.HORIZONTAL)
         frame.buttons = [
-            frame.icon_button('copy_clipboard', False, self._copy),
+            frame.icon_button(
+                'copy_clipboard', False, self._copy_summary_to_clipboard),
             frame.icon_button('exit', False, self._dismiss)
         ]
         frame.enable(False)
         return frame
 
-    def _copy(self, *args) -> None:
+    def _copy_summary_to_clipboard(self, *args) -> None:
         sep = '-' * 20
         rebate_stirling = f'{TOTAL_REBATE} (£)'
         rebate_dollars = f'{TOTAL_REBATE} ($)'
         output = [
             self.date_message.get(),
-            f'{sep} F2F {sep}',
             f'{BROUGHT_FORWARD:<16} {self.report.f2f_bf:>8}',
             f'{CARRIED_FORWARD:<16} {self.report.f2f_cf:>8}',
             f'{TOTAL_RECIPIENTS:<16} {self.report.f2f_recipients:>8}',

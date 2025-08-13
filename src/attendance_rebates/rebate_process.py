@@ -7,9 +7,11 @@ import datetime
 import csv
 from collections import namedtuple
 
+from attendance_rebates.psilogger import logger
 from attendance_rebates.config import get_config
 from attendance_rebates.player import Player, get_players
-from attendance_rebates.constants import REPORT_FIELDS, SHOW_ALL_RECORDS, EBU_KEY
+from attendance_rebates.constants import (
+    REPORT_FIELDS, SHOW_ALL_RECORDS, EBU_KEY)
 from attendance_rebates.csv_utils import get_dict_from_csv_file, write_csv_file
 
 Context = namedtuple(
@@ -68,14 +70,28 @@ class RebateProcess():
 
     def create_files(self) -> None:
         """Control calculations and output."""
+        logger.info(
+            "Starting rebate process",
+            period_start=self.start_date,
+            period_end=self.latest_date,
+        )
         (members, members_fields) = get_dict_from_csv_file(
             self.membership_file,
             EBU_KEY
             )
+        logger.info(
+            "Retrieved membership data",
+            membership_file=str(self.membership_file)
+        )
+        del members_fields
         (cf_data, cf_fields) = get_dict_from_csv_file(
             self.cf_input_file,
             EBU_KEY
             )
+        logger.info(
+            "Retrieved carried forward data",
+            membership_file=str(self.cf_input_file)
+        )
         players = get_players(members)
         self.update_player_bf(players, cf_data)
         self.update_format_attendance(players, self.f2f_input_file, 'f2f')
@@ -98,17 +114,30 @@ class RebateProcess():
     def _generate_bbo_report(self, players: dict[int: Player]) -> None:
         """Create an output report for BBO."""
         report_path = self.bbo_report_file
-        with open(report_path, mode='w') as csv_file:
-            writer = csv.DictWriter(csv_file, fieldnames=REPORT_FIELDS)
-            writer.writeheader()
+        try:
+            with open(report_path, mode='w', encoding='utf-8') as csv_file:
+                writer = csv.DictWriter(csv_file, fieldnames=REPORT_FIELDS)
+                self._write_bbo_report(writer, players)
 
-            for player in players.values():
-                if ((player.bbo_rebate +
-                     player.bbo_bf +
-                     player.bbo_attendance) > 0
-                        or SHOW_ALL_RECORDS):
-                    output = self._get_output_for_bbo_player(player)
-                    writer.writerow(output)
+            logger.info(
+                "Generated BBO report file",
+                path=report_path,
+                recipients=self.bbo_recipients,
+                total_amount=f'${self.bbo_total:.2f}',
+            )
+        except FileExistsError:
+            logger.exception(f'Failed to write {report_path}')
+
+    def _write_bbo_report(self, writer: object, players: dict) -> None:
+        writer.writeheader()
+
+        for player in players.values():
+            if ((player.bbo_rebate +
+                player.bbo_bf +
+                player.bbo_attendance) > 0
+                    or SHOW_ALL_RECORDS):
+                output = self._get_output_for_bbo_player(player)
+                writer.writerow(output)
 
     def _get_output_for_bbo_player(self, player):
         if player.bbo_rebate:
@@ -131,35 +160,61 @@ class RebateProcess():
     def _generate_bbo_output(self, players: dict[int: Player]) -> None:
         """Create an output file for BBO."""
         report_path = self.bbo_rebate_file
-        with open(report_path, mode='w') as csv_file:
-            fieldnames = ['BBO username', 'Amount']
-            writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
-            writer.writeheader()
+        try:
+            with open(report_path, mode='w', encoding='utf-8') as csv_file:
+                fieldnames = ['BBO username', 'Amount']
+                writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+                self._write_bbo_output(writer, players)
 
-            for player in players.values():
-                if player.bbo_rebate:
-                    writer.writerow({
-                        'BBO username': player.bbo_username,
-                        'Amount': player.bbo_rebate,
-                    })
+            logger.info(
+                "Generated BBO rebate file",
+                path=report_path,
+                recipients=self.bbo_recipients,
+                total_amount=f'${self.bbo_total:.2f}',
+            )
+        except FileExistsError:
+            logger.exception(f'Failed to write {report_path}')
 
-    def _generate_f2f_report(self, players: dict[int: Player]) -> None:
+    def _write_bbo_output(self, writer: object, players: dict) -> None:
+        writer.writeheader()
+
+        for player in players.values():
+            if player.bbo_rebate:
+                writer.writerow({
+                    'BBO username': player.bbo_username,
+                    'Amount': player.bbo_rebate,
+                })
+
+    def _generate_f2f_report(self, players: dict) -> None:
         """Create an output report for F2F."""
         report_path = self.f2f_report_file
-        with open(report_path, mode='w') as csv_file:
-            writer = csv.DictWriter(csv_file, fieldnames=REPORT_FIELDS)
-            writer.writeheader()
+        try:
+            with open(report_path, mode='w', encoding='utf-8') as csv_file:
+                writer = csv.DictWriter(csv_file, fieldnames=REPORT_FIELDS)
+                self._write_f2f_report(writer, players)
 
-            for player in players.values():
-                if player.is_student:
-                    continue
+            logger.info(
+                "Generated F2F rebate file",
+                path=report_path,
+                recipients=self.f2f_recipients,
+                total_amount=f'£{self.f2f_total:.2f}',
+            )
+        except FileExistsError:
+            logger.exception(f'Failed to write {report_path}')
 
-                if ((player.f2f_rebate
-                     + player.f2f_bf
-                     + player.f2f_attendance) > 0
-                        or SHOW_ALL_RECORDS):
-                    output = self._get_output_for_f2f_player(player)
-                    writer.writerow(output)
+    def _write_f2f_report(self, writer: object, players: dict) -> None:
+        writer.writeheader()
+
+        for player in players.values():
+            if player.is_student:
+                continue
+
+            if ((player.f2f_rebate
+                    + player.f2f_bf
+                    + player.f2f_attendance) > 0
+                    or SHOW_ALL_RECORDS):
+                output = self._get_output_for_f2f_player(player)
+                writer.writerow(output)
 
     def _get_output_for_f2f_player(self, player):
         if player.f2f_rebate:
@@ -182,22 +237,29 @@ class RebateProcess():
     def _generate_f2f_payment_file(self, players: dict[int: Player]) -> None:
         """Create an output file for F2F."""
         report_path = self.f2f_rebate_file
-        with open(report_path, mode='w') as csv_file:
-            fieldnames = ['Date', 'Type', 'Description', 'Amount']
+        fieldnames = ['Date', 'Type', 'Description', 'Amount']
+        with open(report_path, mode='w', encoding='utf-8') as csv_file:
             writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
-            writer.writeheader()
+            self._write_f2f_payment_file(writer, players)
 
-            # player = players['492064']
-            # player.show_all()
+            logger.info(
+                "Generated F2F report file",
+                path=report_path,
+                recipients=self.f2f_recipients,
+                total_amount=f'£{self.f2f_total:.2f}',
+            )
 
-            for player in players.values():
-                if player.is_student:
-                    continue
-                if player.f2f_rebate:
-                    output = self._generate_player_data_for_f2f_payment_file(
-                        player
-                        )
-                    writer.writerow(output)
+    def _write_f2f_payment_file(self, writer: object, players: dict) -> None:
+        writer.writeheader()
+
+        for player in players.values():
+            if player.is_student:
+                continue
+            if player.f2f_rebate:
+                output = self._generate_player_data_for_f2f_payment_file(
+                    player
+                    )
+                writer.writerow(output)
 
     def _generate_player_data_for_f2f_payment_file(self, player):
         return {

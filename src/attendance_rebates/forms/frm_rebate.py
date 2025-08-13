@@ -5,19 +5,19 @@ from tkinter import ttk
 from datetime import datetime
 
 from psiutils.widgets import separator_frame
-from psiutils. buttons import ButtonFrame, IconButton
+from psiutils. buttons import ButtonFrame
 from psiutils.utilities import window_resize, geometry
 from psiutils.constants import PAD
 from psiutils import messagebox
 
-from config import get_config
-from session import Session
-from common import header_frame, check_files, check_dirs
-from rebate_process import RebateProcess, Context
-import text
+from attendance_rebates.config import get_config
+from attendance_rebates.session import Session
+from attendance_rebates.common import header_frame, check_files, check_dirs
+from attendance_rebates.rebate_process import RebateProcess, Context
 
-from menu import MainMenu
-from forms.frm_report import ReportFrame
+
+from attendance_rebates.menu import MainMenu
+from attendance_rebates.forms.frm_report import ReportFrame
 
 TITLE = 'Rebate reports'
 
@@ -54,10 +54,10 @@ class RebateFrame():
         self.cf_input_file = tk.StringVar()
         self.cf_output_file = tk.StringVar()
 
-        self.show()
+        self._show()
         self._got_focus()
 
-    def show(self) -> None:
+    def _show(self) -> None:
         root = self.root
         root.geometry(geometry(self.config, __file__))
         root.transient(self.parent.root)

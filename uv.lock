@@ -1,6 +1,15 @@
 version = 1
-revision = 2
+revision = 3
 requires-python = ">=3.13"
+
+[[package]]
+name = "appdirs"
+version = "1.4.4"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/d7/d8/05696357e0311f5b5c316d7b95f46c669dd9c15aaeecbb48c7d0aeb88c40/appdirs-1.4.4.tar.gz", hash = "sha256:7d5d0167b2b1ba821647616af46a749d1c653740dd0d2415100fe26e27afdf41", size = 13470, upload-time = "2020-05-11T07:59:51.037Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/3b/00/2344469e2084fb287c2e0b57b72910309874c3245463acd6cf5e3db69324/appdirs-1.4.4-py2.py3-none-any.whl", hash = "sha256:a841dacd6b99318a741b166adb07e19ee71a274450e68237b4650ca1055ab128", size = 9566, upload-time = "2020-05-11T07:59:49.499Z" },
+]
 
 [[package]]
 name = "asttokens"
@@ -16,12 +25,26 @@ name = "attendance-rebates"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
+    { name = "appdirs" },
+    { name = "asttokens" },
+    { name = "clipboard" },
+    { name = "colorama" },
+    { name = "executing" },
+    { name = "iniconfig" },
     { name = "markdown" },
+    { name = "packaging" },
+    { name = "pillow" },
+    { name = "pluggy" },
     { name = "psi-toml" },
     { name = "psiconfig" },
     { name = "psiutils" },
+    { name = "pygments" },
+    { name = "pyperclip" },
     { name = "python-dateutil" },
+    { name = "six" },
+    { name = "structlog" },
     { name = "tkinterweb" },
+    { name = "tkinterweb-tkhtml" },
 ]
 
 [package.dev-dependencies]
@@ -34,12 +57,26 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "markdown", specifier = ">=3.8" },
-    { name = "psi-toml", specifier = ">=0.0.5" },
-    { name = "psiconfig", specifier = ">=0.0.13" },
-    { name = "psiutils", specifier = ">=0.1.54" },
+    { name = "appdirs", specifier = ">=1.4.4" },
+    { name = "asttokens", specifier = ">=3.0.0" },
+    { name = "clipboard", specifier = ">=0.0.4" },
+    { name = "colorama", specifier = ">=0.4.6" },
+    { name = "executing", specifier = ">=2.2.0" },
+    { name = "iniconfig", specifier = ">=2.1.0" },
+    { name = "markdown", specifier = ">=3.8.2" },
+    { name = "packaging", specifier = ">=25.0" },
+    { name = "pillow", specifier = ">=11.3.0" },
+    { name = "pluggy", specifier = ">=1.6.0" },
+    { name = "psi-toml", specifier = ">=0.0.17" },
+    { name = "psiconfig", specifier = ">=0.0.14" },
+    { name = "psiutils", specifier = ">=0.1.64" },
+    { name = "pygments", specifier = ">=2.19.2" },
+    { name = "pyperclip", specifier = ">=1.9.0" },
     { name = "python-dateutil", specifier = ">=2.9.0.post0" },
-    { name = "tkinterweb", specifier = ">=4.3.1" },
+    { name = "six", specifier = ">=1.17.0" },
+    { name = "structlog", specifier = ">=25.4.0" },
+    { name = "tkinterweb", specifier = ">=4.4.4" },
+    { name = "tkinterweb-tkhtml", specifier = ">=1.1.1" },
 ]
 
 [package.metadata.requires-dev]
@@ -49,6 +86,15 @@ dev = [
     { name = "pytest" },
     { name = "python-mock", specifier = ">=0.0.3" },
 ]
+
+[[package]]
+name = "clipboard"
+version = "0.0.4"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pyperclip" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/8a/38/17f3885713d0f39994563029942b1d31c93d4e56d80da505abfbfb3a3bc4/clipboard-0.0.4.tar.gz", hash = "sha256:a72a78e9c9bf68da1c3f29ee022417d13ec9e3824b511559fd2b702b1dd5b817", size = 1713, upload-time = "2014-05-22T12:49:08.683Z" }
 
 [[package]]
 name = "colorama"
@@ -188,11 +234,17 @@ wheels = [
 
 [[package]]
 name = "psi-toml"
-version = "0.0.11"
+version = "0.0.17"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/54/a2/67d92983d852dfe79aefb49f7fd5e8c3535ec19ef278764fb9a788a93818/psi_toml-0.0.11.tar.gz", hash = "sha256:3203b5eaa913f1377ffd32abc78232433ee8055bb684e55d50dadcc78f5eb170", size = 3240, upload-time = "2025-07-22T14:16:45.148Z" }
+dependencies = [
+    { name = "iniconfig" },
+    { name = "packaging" },
+    { name = "pluggy" },
+    { name = "pygments" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/6c/e2/1c10d78f1c94e7d112f7e3f9472ee617dba82de1d5ae0c59ee7492e7cce4/psi_toml-0.0.17.tar.gz", hash = "sha256:ca128e892c3f01ad12fc616f0d8389d58bfda1bc000c92f435e0385bcd7882b3", size = 3856, upload-time = "2025-08-11T15:02:40.59Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/13/ce/e1906197d63a26b96ba17c82b24b3b133b13d9bbde16fb7f64ed3be5399f/psi_toml-0.0.11-py3-none-any.whl", hash = "sha256:058314d6960674ab87d20c1d9e6110373d77882671a0ec760bf15957eb36f045", size = 4245, upload-time = "2025-07-22T14:16:43.811Z" },
+    { url = "https://files.pythonhosted.org/packages/2d/9a/99e00dd5587a6e09cd57dcf28e6aab3251b51e1527eb74061080bd6063d3/psi_toml-0.0.17-py3-none-any.whl", hash = "sha256:b8be1485e6e85bbc9432600dbd7fc35aed2b698b370fc3469bca2c6a4719b0ec", size = 5033, upload-time = "2025-08-11T15:02:39.367Z" },
 ]
 
 [[package]]
@@ -231,6 +283,12 @@ sdist = { url = "https://files.pythonhosted.org/packages/b0/77/a5b8c569bf593b014
 wheels = [
     { url = "https://files.pythonhosted.org/packages/c7/21/705964c7812476f378728bdf590ca4b771ec72385c533964653c68e86bdc/pygments-2.19.2-py3-none-any.whl", hash = "sha256:86540386c03d588bb81d44bc3928634ff26449851e99741617ecb9037ee5ec0b", size = 1225217, upload-time = "2025-06-21T13:39:07.939Z" },
 ]
+
+[[package]]
+name = "pyperclip"
+version = "1.9.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/30/23/2f0a3efc4d6a32f3b63cdff36cd398d9701d26cda58e3ab97ac79fb5e60d/pyperclip-1.9.0.tar.gz", hash = "sha256:b7de0142ddc81bfc5c7507eea19da920b92252b548b96186caf94a5e2527d310", size = 20961, upload-time = "2024-06-18T20:38:48.401Z" }
 
 [[package]]
 name = "pytest"
@@ -276,6 +334,15 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/94/e7/b2c673351809dca68a0e064b6af791aa332cf192da575fd474ed7d6f16a2/six-1.17.0.tar.gz", hash = "sha256:ff70335d468e7eb6ec65b95b99d3a2836546063f63acc5171de367e834932a81", size = 34031, upload-time = "2024-12-04T17:35:28.174Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/b7/ce/149a00dd41f10bc29e5921b496af8b574d8413afcd5e30dfa0ed46c2cc5e/six-1.17.0-py2.py3-none-any.whl", hash = "sha256:4721f391ed90541fddacab5acf947aa0d3dc7d27b2e1e8eda2be8970586c3274", size = 11050, upload-time = "2024-12-04T17:35:26.475Z" },
+]
+
+[[package]]
+name = "structlog"
+version = "25.4.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/79/b9/6e672db4fec07349e7a8a8172c1a6ae235c58679ca29c3f86a61b5e59ff3/structlog-25.4.0.tar.gz", hash = "sha256:186cd1b0a8ae762e29417095664adf1d6a31702160a46dacb7796ea82f7409e4", size = 1369138, upload-time = "2025-06-02T08:21:12.971Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/a0/4a/97ee6973e3a73c74c8120d59829c3861ea52210667ec3e7a16045c62b64d/structlog-25.4.0-py3-none-any.whl", hash = "sha256:fe809ff5c27e557d14e613f45ca441aabda051d119ee5a0102aaba6ce40eed2c", size = 68720, upload-time = "2025-06-02T08:21:11.43Z" },
 ]
 
 [[package]]

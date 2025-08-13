@@ -4,11 +4,10 @@
 
     Get valid parameters from user and call the calculate method in process.py
 """
-from root import Root
+from attendance_rebates.root import Root
 
 from psiutils.icecream_init import ic_init
 ic_init()
-
 
 
 def main() -> None:

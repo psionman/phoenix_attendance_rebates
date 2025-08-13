@@ -39,11 +39,11 @@ dev = [
 requires = ['uv-build']
 build-backend = 'uv_build'
 
-[tool.ruff]
-select = ["Q"]  # Enforce quotes rule
-fix = true      # Auto-fix issues on save or when running `ruff --fix`
+# [tool.ruff]
+# select = ["Q"]  # Enforce quotes rule
+# fix = true      # Auto-fix issues on save or when running `ruff --fix`
 
-[tool.ruff.flake8-quotes]
-quotes = "double"         # Prefer double quotes
-docstring-quotes = "double" # Also use double quotes for docstrings
-avoid-escape = true       # Keep single quotes if double would need escaping
+# [tool.ruff.flake8-quotes]
+# quotes = "double"         # Prefer double quotes
+# docstring-quotes = "double" # Also use double quotes for docstrings
+# avoid-escape = true       # Keep single quotes if double would need escaping

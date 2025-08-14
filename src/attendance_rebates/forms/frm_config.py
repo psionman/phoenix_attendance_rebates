@@ -2,15 +2,15 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import filedialog
 
-from attendance_rebates.psilogger import logger
 from psiutils.widgets import separator_frame, clickable_widget
 from psiutils. buttons import ButtonFrame, IconButton
 from psiutils.utilities import window_resize, geometry
 from psiutils.constants import PAD
 
+from attendance_rebates.psilogger import logger
 from attendance_rebates.constants import (
-    APP_TITLE, REBATE_MAXIMUM,
-    REBATE_INCREMENT, ALLOWED_PAYMENT_MONTHS, CLUB_MIN, CLUB_MAX)
+    APP_TITLE, REBATE_MAXIMUM, REBATE_INCREMENT, ALLOWED_PAYMENT_MONTHS,
+    CLUB_MIN, CLUB_MAX)
 from attendance_rebates.config import get_config
 import attendance_rebates.text as txt
 

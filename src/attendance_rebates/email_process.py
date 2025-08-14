@@ -4,7 +4,7 @@ from collections import namedtuple
 
 from attendance_rebates.config import get_config
 from attendance_rebates.csv_utils import get_dict_from_csv_file, write_csv_file
-import attendance_rebates.text as text
+import attendance_rebates.text as txt
 
 
 Context = namedtuple(
@@ -26,6 +26,7 @@ class EmailProcess():
     The Bridgewebs database has the fields in BRIDGEWEBS_XREF
     """
     def __init__(self, context: namedtuple,) -> None:
+        # pylint: disable=no-member
         config = get_config()
         self.context = context
         # Dates
@@ -36,16 +37,16 @@ class EmailProcess():
         self.email_input_file = context.input_file
         self.email_output_file = context.output_file
         self.email_reset_file = str(self.email_output_file).replace(
-            text.EMAIL, text.RESET)
+            txt.EMAIL, txt.RESET)
         self.bbo_payment_file = ''
 
         # Email attributes
-        self.email_flag_club = f'{text.CLUB}{config.email_flag_club}'
-        self.rebate_club = f'{text.CLUB}{config.rebate_club}'
-        self.brought_forward_club = f'{text.CLUB}{config.brought_forward_club}'
-        self.sessions_club = f'{text.CLUB}{config.sessions_club}'
-        self.carried_forward_club = f'{text.CLUB}{config.carried_forward_club}'
-        self.quarter_club = f'{text.CLUB}{config.quarter_club}'
+        self.email_flag_club = f'{txt.CLUB}{config.email_flag_club}'
+        self.rebate_club = f'{txt.CLUB}{config.rebate_club}'
+        self.brought_forward_club = f'{txt.CLUB}{config.brought_forward_club}'
+        self.sessions_club = f'{txt.CLUB}{config.sessions_club}'
+        self.carried_forward_club = f'{txt.CLUB}{config.carried_forward_club}'
+        self.quarter_club = f'{txt.CLUB}{config.quarter_club}'
 
         self.OK = 1
 
@@ -59,6 +60,7 @@ class EmailProcess():
             self.email_input_file,
             'EBU'
             )
+        del rebate_fields
 
         rebate_members = self._get_members_with_rebate(members, rebates)
         if self.context.bbo_payment_file:
@@ -67,9 +69,7 @@ class EmailProcess():
 
         reset_members = self._get_reset_records(rebate_members)
         reset_ok = self._write_reset_file(members_fields, reset_members)
-        if email_ok and reset_ok:
-            return self.OK
-        return False
+        return self.OK if email_ok and reset_ok else False
 
     def _write_email_file(self, members_fields, rebate_members):
         # Write email file

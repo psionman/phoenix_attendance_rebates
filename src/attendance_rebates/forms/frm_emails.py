@@ -7,15 +7,13 @@ from psiutils.widgets import separator_frame
 from psiutils. buttons import ButtonFrame
 from psiutils.utilities import window_resize, geometry
 from psiutils.constants import PAD
-# from psiutils import messagebox
 
-from config import get_config
-from session import Session
-from common import header_frame, check_files, check_dirs
-from email_process import EmailProcess, Context
+from attendance_rebates.config import get_config
+from attendance_rebates.session import Session
+from attendance_rebates.common import check_files, check_dirs
+from attendance_rebates.email_process import EmailProcess, Context
 
-from menu import MainMenu
-import text
+from attendance_rebates.menu import MainMenu
 
 TITLE = 'Email reports'
 
@@ -42,10 +40,10 @@ class EmailFrame():
         self.f2f_email_output_file = tk.StringVar()
         self.bbo_email_output_file = tk.StringVar()
 
-        self.show()
+        self._show()
         self._got_focus()
 
-    def show(self) -> None:
+    def _show(self) -> None:
         root = self.root
         root.geometry(geometry(self.config, __file__))
         root.transient(self.parent.root)
@@ -76,7 +74,8 @@ class EmailFrame():
         frame.rowconfigure(3, weight=1)
         frame.columnconfigure(0, weight=1)  # Essential
 
-        header_frame(frame, TITLE, row=0)
+        header = ttk.Label(frame, text=TITLE, font=('Arial', 16))
+        header.grid(row=0, column=0, padx=PAD)
 
         information_frame = self._info_frame(frame)
         information_frame.grid(row=1, column=0, sticky=tk.EW, padx=PAD)
@@ -196,8 +195,9 @@ class EmailFrame():
         return frame
 
     def _create_email_files(self, *args) -> None:
+        # pylint: disable=no-member
         """Create Email files."""
-        if not check_files(self, self.email_files()):
+        if not check_files(self, self._email_files()):
             return
         if not check_dirs(self):
             return
@@ -231,7 +231,8 @@ class EmailFrame():
             self._email_failure()
         self.root.destroy()
 
-    def email_files(self) -> tuple[Path]:
+    def _email_files(self) -> tuple[Path]:
+        # pylint: disable=no-member
         return (
             Path(self.config.input_dir, self.membership_file.get()),
             Path(self.session.period_output_dir, self.f2f_att_report.get()),
@@ -239,6 +240,7 @@ class EmailFrame():
         )
 
     def _email_success(self):
+        # pylint: disable=no-member
         message = [
             'Email files successfully created ...',
             'Files will be found in the directory:',
@@ -251,12 +253,14 @@ class EmailFrame():
         )
 
     def _email_failure(self):
+        # pylint: disable=no-member
         line_one = "Email files error. files not created."
         line_two = f"Report directory: {self.config.output_dir}"
         msg = f'{line_one}' + '\n' + f'{line_two}'
         messagebox.showerror(title=self.title, message=msg, parent=self)
 
     def _got_focus(self, *args) -> None:
+        # pylint: disable=no-member
         self.config = get_config()
         self.payment_months.set(self.config.payment_months)
         self.rebate_f2f.set(f'{self.config.rebate_f2f / 100:.2f} (£)')

@@ -4,12 +4,7 @@ from tkinter import ttk, filedialog, messagebox
 
 from psiutils.constants import CSV_FILE_TYPES, PAD
 
-
-def header_frame(container, text, row):
-    frame = ttk.Frame(container)
-    frame.grid(row=row, column=0)
-    header = ttk.Label(frame, text=text, font=('Arial', 16))
-    header.grid(row=0, column=0, columnspan=2, sticky=tk.EW, padx=PAD)
+from attendance_rebates.psilogger import logger
 
 
 def get_csv_file(frame, title, initialdir, initialfile):
@@ -27,16 +22,17 @@ def get_csv_file(frame, title, initialdir, initialfile):
 
 def check_files(frame, path_list):
     """Ensure that all files exist."""
-    for path in path_list:
-        if not _file_exists(frame, path):
-            return False
-    return True
+    return all(_file_exists(frame, path) for path in path_list)
 
 
 def _file_exists(parent, path):
     """Check file exists, if not, display a notification."""
     if path.is_file():
         return True
+    logger.warning(
+        'file does not exist',
+        path=str(path),
+    )
     msg = f'File does not exist: \n{path}'
     messagebox.showerror(title='File error', message=msg, parent=parent.root)
     return False

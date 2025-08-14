@@ -12,7 +12,7 @@ from psiutils import messagebox
 
 from attendance_rebates.config import get_config
 from attendance_rebates.session import Session
-from attendance_rebates.common import header_frame, check_files, check_dirs
+from attendance_rebates.common import check_files, check_dirs
 from attendance_rebates.rebate_process import RebateProcess, Context
 
 
@@ -88,7 +88,8 @@ class RebateFrame():
         frame.rowconfigure(3, weight=1)
         frame.columnconfigure(0, weight=1)  # Essential
 
-        header_frame(frame, TITLE, row=0)
+        header = ttk.Label(frame, text=TITLE, font=('Arial', 16))
+        header.grid(row=0, column=0, padx=PAD)
 
         information_frame = self._info_frame(frame)
         information_frame.grid(row=1, column=0, sticky=tk.EW, padx=PAD)
@@ -259,6 +260,7 @@ class RebateFrame():
 
     def _create_rebate_files(self, *args) -> None:
         """Call the calculation process."""
+        # pylint: disable=no-member
         if not check_files(self, self.rebate_files()):
             return
         if not check_dirs(self):
@@ -297,7 +299,6 @@ class RebateFrame():
                 title='Process error',
                 message=result,
                 parent=self.root,
-                geometry='600x200'
             )
         self.root.destroy()
 
@@ -306,6 +307,7 @@ class RebateFrame():
         self.root.wait_window(dlg.root)
 
     def rebate_files(self) -> tuple[Path]:
+        # pylint: disable=no-member
         return (
             Path(self.config.input_dir, self.membership_file.get()),
             Path(self.config.input_dir, self.f2f_input_file.get()),
@@ -314,6 +316,7 @@ class RebateFrame():
         )
 
     def _got_focus(self, *args) -> None:
+        # pylint: disable=no-member
         self.config = get_config()
         self.payment_months.set(self.config.payment_months)
         self.rebate_f2f.set(f'{self.config.rebate_f2f / 100:.2f} (£)')

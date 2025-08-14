@@ -81,7 +81,7 @@ class RebateProcess():
             )
         logger.info(
             "Retrieved membership data",
-            membership_file=str(self.membership_file)
+            path=str(self.membership_file)
         )
         del members_fields
         (cf_data, cf_fields) = get_dict_from_csv_file(
@@ -90,7 +90,7 @@ class RebateProcess():
             )
         logger.info(
             "Retrieved carried forward data",
-            membership_file=str(self.cf_input_file)
+            path=str(self.cf_input_file)
         )
         players = get_players(members)
         self.update_player_bf(players, cf_data)

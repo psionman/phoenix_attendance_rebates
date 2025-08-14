@@ -2,15 +2,17 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import filedialog
 
+from attendance_rebates.psilogger import logger
 from psiutils.widgets import separator_frame, clickable_widget
 from psiutils. buttons import ButtonFrame, IconButton
 from psiutils.utilities import window_resize, geometry
 from psiutils.constants import PAD
 
-from constants import (APP_TITLE, REBATE_MAXIMUM, REBATE_INCREMENT,
-                       ALLOWED_PAYMENT_MONTHS, CLUB_MIN, CLUB_MAX)
-from config import get_config
-import text
+from attendance_rebates.constants import (
+    APP_TITLE, REBATE_MAXIMUM,
+    REBATE_INCREMENT, ALLOWED_PAYMENT_MONTHS, CLUB_MIN, CLUB_MAX)
+from attendance_rebates.config import get_config
+import attendance_rebates.text as txt
 
 
 class ConfigFrame():
@@ -22,6 +24,7 @@ class ConfigFrame():
         config = self.config
 
         # tk variables
+        # pylint: disable=no-member
         self.year_start = tk.IntVar(value=config.year_start)
         self.email_flag_club = tk.IntVar(value=config.email_flag_club)
         self.rebate_club = tk.IntVar(value=config.rebate_club)
@@ -37,13 +40,29 @@ class ConfigFrame():
         self.download_folder = tk.StringVar(value=config.input_dir)
         self.output_dir = tk.StringVar(value=config.output_dir)
 
+        # Detect changes
+        self.year_start.trace_add('write', self._check_value_changed)
+        self.email_flag_club.trace_add('write', self._check_value_changed)
+        self.rebate_club.trace_add('write', self._check_value_changed)
+        self.sessions_club.trace_add('write', self._check_value_changed)
+        self.carried_forward_club.trace_add('write', self._check_value_changed)
+        self.quarter_club.trace_add('write', self._check_value_changed)
+        self.brought_forward_club.trace_add('write', self._check_value_changed)
+        self.payment_months.trace_add('write', self._check_value_changed)
+        self.rebate_f2f.trace_add('write', self._check_value_changed)
+        self.rebate_bbo.trace_add('write', self._check_value_changed)
+        self.download_folder.trace_add('write', self._check_value_changed)
+        self.output_dir.trace_add('write', self._check_value_changed)
+
+        self.button_frame = None
+
         self.show()
 
     def show(self) -> None:
         root = self.root
         root.geometry(geometry(self.config, __file__))
         root.transient(self.parent.root)
-        root.title(f'{APP_TITLE} - {text.CONFIG}')
+        root.title(f'{APP_TITLE} - {txt.CONFIG}')
 
         root.bind('<Control-x>', self._dismiss)
         root.bind('<Control-s>', self._save_config)
@@ -71,8 +90,8 @@ class ConfigFrame():
         config_frame = self._config_frame(frame)
         config_frame.grid(row=1, column=0, sticky=tk.NSEW, padx=PAD)
 
-        button_frame = self._button_frame(frame)
-        button_frame.grid(row=4, column=0, sticky=tk.EW, padx=PAD, pady=PAD)
+        self.button_frame = self._button_frame(frame)
+        self.button_frame.grid(row=4, column=0, sticky=tk.EW, padx=PAD, pady=PAD)
         return frame
 
     def _config_frame(self, master: tk.Frame) -> tk.Frame:
@@ -110,10 +129,6 @@ class ConfigFrame():
             textvariable=self.payment_months,
             )
         combobox.grid(row=row, column=1, sticky=tk.EW)
-        # combobox.bind(
-        #     '<<ComboboxSelected>>',
-        #     self._change_cmb_period_months
-        #     )
         clickable_widget(combobox)
 
         row += 1
@@ -205,7 +220,7 @@ class ConfigFrame():
         entry = ttk.Entry(frame,  textvariable=self.download_folder)
         entry.grid(row=row, column=1, columnspan=2, sticky=tk.EW)
         button = IconButton(
-            frame, text.OPEN, 'open', self._get_download_folder)
+            frame, txt.OPEN, 'open', self._get_download_folder)
         button.grid(row=row, column=3, sticky=tk.W, padx=PAD)
 
         row += 1
@@ -214,7 +229,7 @@ class ConfigFrame():
         entry = ttk.Entry(frame,  textvariable=self.output_dir)
         entry.grid(row=row, column=1, columnspan=2, sticky=tk.EW)
         button = IconButton(
-            frame, text.OPEN, 'open', self._get_output_dir)
+            frame, txt.OPEN, 'open', self._get_output_dir)
         button.grid(row=row, column=3, sticky=tk.W, padx=PAD, pady=PAD)
         clickable_widget(button)
 
@@ -226,6 +241,7 @@ class ConfigFrame():
             frame.icon_button('save', True, self._save_config),
             frame.icon_button('exit', False, self._dismiss)
         ]
+        frame.disable()
         return frame
 
     def _save_config(self):
@@ -244,55 +260,83 @@ class ConfigFrame():
 
     def _get_download_folder(self):
         """Set Downloads directory."""
-        dir = filedialog.askdirectory(
+        download_dir = filedialog.askdirectory(
             title='Downloads folder',
             initialdir=self.config.input_dir,
             parent=self.root,
             )
-        if dir:
-            self.download_folder.set(dir)
-            self.config.input_dir = dir
-            self.get_file_paths()
+        if download_dir:
+            self.download_folder.set(download_dir)
+            self.config.input_dir = download_dir
 
     def _get_output_dir(self):
         """Set output directory."""
-        dir = filedialog.askdirectory(
+        output_dir = filedialog.askdirectory(
             title='Output directory',
             initialdir=self.config.output_dir,
             parent=self.root,
             )
-        if dir:
-            self.output_dir.set(dir)
-            self.config.output_dir = dir
-            self.get_file_paths()
+        if output_dir:
+            self.output_dir.set(output_dir)
+            self.config.output_dir = output_dir
 
-    # def _change_cmb_period_months(self, *args) -> None:
-    #     """Relay function on change of combobox."""
-    #     self.calculate_dates()
+    def _check_value_changed(self, *args) -> None:
+        self.button_frame.disable()
+        changes = self._config_changes()
+        if changes:
+            self.button_frame.enable()
 
     def save_config(self, *args) -> int:
-        # Email attributes
+        """Save the config."""
+        changes = self._config_changes()
+
+        for key, new_value in changes.items():
+            changes[key] = (self.config.config[key], new_value)
+            self.config.update(key, new_value)
+
+        logger.info(
+            "Config saved",
+            changes=changes
+        )
+
+        return self.config.save()
+
+    def _config_changes(self) -> dict:
+        changes = {}
         config = self.config.config
-        config['email_flag_club'] = self.email_flag_club.get()
-        config['brought_forward_club'] = self.brought_forward_club.get()
-        config['rebate_club'] = self.rebate_club.get()
-        config['carried_forward_club'] = self.carried_forward_club.get()
-        config['sessions_club'] = self.sessions_club.get()
+
+        # Email attributes
+        if config['email_flag_club'] != self.email_flag_club.get():
+            changes['email_flag_club'] = self.email_flag_club.get()
+        if config['brought_forward_club'] != self.brought_forward_club.get():
+            changes['brought_forward_club'] = self.brought_forward_club.get()
+        if config['rebate_club'] != self.rebate_club.get():
+            changes['rebate_club'] = self.rebate_club.get()
+        if config['carried_forward_club'] != self.carried_forward_club.get():
+            changes['carried_forward_club'] = self.carried_forward_club.get()
+        if config['sessions_club'] != self.sessions_club.get():
+            changes['sessions_club'] = self.sessions_club.get()
+        if config['quarter_club'] != self.quarter_club.get():
+            changes['quarter_club'] = self.quarter_club.get()
 
         # Dates
-        config['year_start'] = self.year_start.get()
+        if config['year_start'] != self.year_start.get():
+            changes['year_start'] = self.year_start.get()
 
         # Rebates
-        config['payment_months'] = self.payment_months.get()
-        config['rebate_f2f'] = self.rebate_f2f.get()
-        config['rebate_bbo'] = self.rebate_bbo.get()
+        if config['payment_months'] != self.payment_months.get():
+            changes['payment_months'] = self.payment_months.get()
+        if config['rebate_f2f'] != self.rebate_f2f.get():
+            changes['rebate_f2f'] = self.rebate_f2f.get()
+        if config['rebate_bbo'] != self.rebate_bbo.get():
+            changes['rebate_bbo'] = self.rebate_bbo.get()
 
         # Folders
-        config['download_folder'] = self.download_folder.get()
-        config['output_dir'] = self.output_dir.get()
-
-        result = self.config.save()
-        return result
+        if config['download_folder'] != self.download_folder.get():
+            changes['download_folder'] = self.download_folder.get()
+        if config['output_dir'] != self.output_dir.get():
+            changes['output_dir'] = self.output_dir.get()
+        return changes
 
     def _dismiss(self, *args):
         self.root.destroy()

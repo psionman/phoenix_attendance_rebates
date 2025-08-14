@@ -1,6 +1,6 @@
 import logging
-import structlog
 from logging.handlers import RotatingFileHandler
+import structlog
 
 # === 1. Console handler with pretty dev output ===
 console_handler = logging.StreamHandler()

@@ -15,5 +15,6 @@ Pygments>=2.19.2
 pyperclip>=1.9.0
 python-dateutil>=2.9.0.post0
 six>=1.17.0
+structlog>=25.4.0
 tkinterweb>=4.4.4
 tkinterweb-tkhtml>=1.1.1

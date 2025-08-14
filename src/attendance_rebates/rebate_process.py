@@ -109,6 +109,7 @@ class RebateProcess():
         self._generate_f2f_payment_file(players)
 
         # Wrap up
+        logger.info("Rebate process complete", stage="end", status="success")
         return self.OK
 
     def _generate_bbo_report(self, players: dict[int: Player]) -> None:
@@ -120,8 +121,8 @@ class RebateProcess():
                 self._write_bbo_report(writer, players)
 
             logger.info(
-                "Generated BBO report file",
-                path=report_path,
+                'Generated BBO report file',
+                path=str(report_path),
                 recipients=self.bbo_recipients,
                 total_amount=f'${self.bbo_total:.2f}',
             )
@@ -168,7 +169,7 @@ class RebateProcess():
 
             logger.info(
                 "Generated BBO rebate file",
-                path=report_path,
+                path=str(report_path),
                 recipients=self.bbo_recipients,
                 total_amount=f'${self.bbo_total:.2f}',
             )
@@ -195,7 +196,7 @@ class RebateProcess():
 
             logger.info(
                 "Generated F2F rebate file",
-                path=report_path,
+                path=str(report_path),
                 recipients=self.f2f_recipients,
                 total_amount=f'£{self.f2f_total:.2f}',
             )
@@ -244,7 +245,7 @@ class RebateProcess():
 
             logger.info(
                 "Generated F2F report file",
-                path=report_path,
+                path=str(report_path),
                 recipients=self.f2f_recipients,
                 total_amount=f'£{self.f2f_total:.2f}',
             )
@@ -273,15 +274,22 @@ class RebateProcess():
     def _create_cf_output_file(self, players, cf_fields):
         # Create a file of carried forward data
         report_path = self.cf_output_file
-        cf_items = {}
-        for player in players.values():
-            if player.f2f_cf or player.bbo_cf:
-                cf_items[player.ebu] = {
-                    'EBU': player.ebu,
-                    'bbo': player.bbo_cf,
-                    'f2f': player.f2f_cf,
-                }
+        cf_items = {
+            player.ebu: {
+                'EBU': player.ebu,
+                'bbo': player.bbo_cf,
+                'f2f': player.f2f_cf,
+            }
+            for player in players.values()
+            if player.f2f_cf or player.bbo_cf
+        }
         write_csv_file(report_path, cf_fields, cf_items)
+        logger.info(
+            "CF output file generated",
+            stage="cf_output",
+            file_path=report_path,
+            records=len(cf_items),
+        )
 
     def calculate_player_rebate(self, players: dict[int: Player]) -> None:
         """Process a player."""

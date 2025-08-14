@@ -2,6 +2,7 @@
 
 from collections import namedtuple
 
+from attendance_rebates.psilogger import logger
 from attendance_rebates.config import get_config
 from attendance_rebates.csv_utils import get_dict_from_csv_file, write_csv_file
 import attendance_rebates.text as txt
@@ -48,19 +49,40 @@ class EmailProcess():
         self.carried_forward_club = f'{txt.CLUB}{config.carried_forward_club}'
         self.quarter_club = f'{txt.CLUB}{config.quarter_club}'
 
+        self.mode = 'F2F'
+        if self.context.bbo_payment_file:
+            self.mode = 'BBO'
+
         self.OK = 1
 
     def create_files(self) -> None:
         """ Create the output files."""
+        logger.info(
+            "Starting email process",
+            period_date=self.period_date,
+            mode=self.mode,
+        )
+
         (members, members_fields) = get_dict_from_csv_file(
             self.membership_file,
             'EBU'
             )
+        logger.info(
+            "Retrieved membership data",
+            mode=self.mode,
+            path=str(self.membership_file)
+        )
+
         (rebates, rebate_fields) = get_dict_from_csv_file(
             self.email_input_file,
             'EBU'
             )
         del rebate_fields
+        logger.info(
+            "Retrieved email input file",
+            mode=self.mode,
+            path=str(self.email_input_file)
+        )
 
         rebate_members = self._get_members_with_rebate(members, rebates)
         if self.context.bbo_payment_file:
@@ -69,6 +91,11 @@ class EmailProcess():
 
         reset_members = self._get_reset_records(rebate_members)
         reset_ok = self._write_reset_file(members_fields, reset_members)
+        logger.info(
+            "Email process complete",
+            mode=self.mode,
+            stage="end",
+            status="success")
         return self.OK if email_ok and reset_ok else False
 
     def _write_email_file(self, members_fields, rebate_members):
@@ -91,8 +118,15 @@ class EmailProcess():
                 members_fields,
                 reset_members
                 )
+
+            logger.info(
+                'Generated reset file file',
+                mode=self.mode,
+                path=str(self.email_reset_file),
+            )
             return True
         except FileNotFoundError:
+            logger.exception(f'Failed to write {self.email_reset_file}')
             return False
 
     def _create_bbo_payment_file(self, members) -> None:
@@ -100,12 +134,20 @@ class EmailProcess():
                     for member in members. values()]
         payments.sort(key=lambda item: item[0])
         payments.sort(key=lambda item: item[1])
+        total = sum(float(item[1]) for item in payments)
 
         output = [f'{item[0]}, {item[1]}' for item in payments]
 
         path = self.context.bbo_payment_file
         with open(path, 'w', encoding='utf-8') as f_payments:
             f_payments.write('\n'.join(output))
+
+        logger.info(
+            'Created BBO payment file',
+            path=str(path),
+            recipients=len(output),
+            total_amount=f'${total:.2f}',
+            )
 
     def _get_members_with_rebate(self, members, rebates):
         rebate_members = {}

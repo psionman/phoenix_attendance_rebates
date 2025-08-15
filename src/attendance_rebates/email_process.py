@@ -2,7 +2,8 @@
 
 from collections import namedtuple
 
-from attendance_rebates.psilogger import logger
+from psiutils.utilities import logger
+
 from attendance_rebates.config import get_config
 from attendance_rebates.csv_utils import get_dict_from_csv_file, write_csv_file
 import attendance_rebates.text as txt

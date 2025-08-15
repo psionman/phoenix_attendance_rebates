@@ -4,10 +4,9 @@ from tkinter import filedialog
 
 from psiutils.widgets import separator_frame, clickable_widget
 from psiutils. buttons import ButtonFrame, IconButton
-from psiutils.utilities import window_resize, geometry
+from psiutils.utilities import window_resize, geometry, logger
 from psiutils.constants import PAD
 
-from attendance_rebates.psilogger import logger
 from attendance_rebates.constants import (
     APP_TITLE, REBATE_MAXIMUM, REBATE_INCREMENT, ALLOWED_PAYMENT_MONTHS,
     CLUB_MIN, CLUB_MAX)
@@ -15,7 +14,36 @@ from attendance_rebates.config import get_config
 import attendance_rebates.text as txt
 
 
+FIELDS = {
+    "year_start": tk.IntVar,
+    "email_flag_club": tk.IntVar,
+    "rebate_club": tk.IntVar,
+    "sessions_club": tk.IntVar,
+    "carried_forward_club": tk.IntVar,
+    "quarter_club": tk.IntVar,
+    "brought_forward_club": tk.IntVar,
+    "payment_months": tk.IntVar,
+    "rebate_f2f": tk.IntVar,
+    "rebate_bbo": tk.IntVar,
+    "download_folder": tk.StringVar,
+    "output_dir": tk.StringVar,
+}
+
+
 class ConfigFrame():
+    year_start: tk.IntVar
+    email_flag_club: tk.IntVar
+    rebate_club: tk.IntVar
+    sessions_club: tk.IntVar
+    carried_forward_club: tk.IntVar
+    quarter_club: tk.IntVar
+    brought_forward_club: tk.IntVar
+    payment_months: tk.IntVar
+    rebate_f2f: tk.IntVar
+    rebate_bbo: tk.IntVar
+    download_folder: tk.StringVar
+    output_dir: tk.StringVar
+
     def __init__(self, parent):
         self.root = tk.Toplevel(parent.root)
         self.parent = parent
@@ -23,42 +51,34 @@ class ConfigFrame():
         self.config = get_config()
         config = self.config
 
-        # tk variables
-        # pylint: disable=no-member
-        self.year_start = tk.IntVar(value=config.year_start)
-        self.email_flag_club = tk.IntVar(value=config.email_flag_club)
-        self.rebate_club = tk.IntVar(value=config.rebate_club)
-        self.sessions_club = tk.IntVar(value=config.sessions_club)
-        self.carried_forward_club = tk.IntVar(
-            value=config.carried_forward_club)
-        self.quarter_club = tk.IntVar(value=config.quarter_club)
-        self.brought_forward_club = tk.IntVar(
-            value=config.brought_forward_club)
-        self.payment_months = tk.IntVar(value=config.payment_months)
-        self.rebate_f2f = tk.IntVar(value=config.rebate_f2f)
-        self.rebate_bbo = tk.IntVar(value=config.rebate_bbo)
-        self.download_folder = tk.StringVar(value=config.input_dir)
-        self.output_dir = tk.StringVar(value=config.output_dir)
-
-        # Detect changes
-        self.year_start.trace_add('write', self._check_value_changed)
-        self.email_flag_club.trace_add('write', self._check_value_changed)
-        self.rebate_club.trace_add('write', self._check_value_changed)
-        self.sessions_club.trace_add('write', self._check_value_changed)
-        self.carried_forward_club.trace_add('write', self._check_value_changed)
-        self.quarter_club.trace_add('write', self._check_value_changed)
-        self.brought_forward_club.trace_add('write', self._check_value_changed)
-        self.payment_months.trace_add('write', self._check_value_changed)
-        self.rebate_f2f.trace_add('write', self._check_value_changed)
-        self.rebate_bbo.trace_add('write', self._check_value_changed)
-        self.download_folder.trace_add('write', self._check_value_changed)
-        self.output_dir.trace_add('write', self._check_value_changed)
+        for field, f_type in FIELDS.items():
+            if f_type is tk.StringVar:
+                setattr(self, field, self._stringvar(getattr(config, field)))
+            elif f_type is tk.IntVar:
+                setattr(self, field, self._intvar(getattr(config, field)))
+            elif f_type is tk.BooleanVar:
+                setattr(self, field, self._boolvar(getattr(config, field)))
 
         self.button_frame = None
 
-        self.show()
+        self._show()
 
-    def show(self) -> None:
+    def _stringvar(self, value: str) -> tk.StringVar:
+        stringvar = tk.StringVar(value=value)
+        stringvar.trace_add('write', self._check_value_changed)
+        return stringvar
+
+    def _intvar(self, value: int) -> tk.IntVar:
+        intvar = tk.IntVar(value=value)
+        intvar.trace_add('write', self._check_value_changed)
+        return intvar
+
+    def _boolvar(self, value: bool) -> tk.BooleanVar:
+        boolvar = tk.BooleanVar(value=value)
+        boolvar.trace_add('write', self._check_value_changed)
+        return boolvar
+
+    def _show(self) -> None:
         root = self.root
         root.geometry(geometry(self.config, __file__))
         root.transient(self.parent.root)
@@ -281,62 +301,29 @@ class ConfigFrame():
             self.config.output_dir = output_dir
 
     def _check_value_changed(self, *args) -> None:
-        self.button_frame.disable()
-        changes = self._config_changes()
-        if changes:
-            self.button_frame.enable()
+        enable = bool(self._config_changes())
+        self.button_frame.enable(enable)
 
     def save_config(self, *args) -> int:
         """Save the config."""
-        changes = self._config_changes()
-
-        for key, new_value in changes.items():
-            changes[key] = (self.config.config[key], new_value)
-            self.config.update(key, new_value)
-
+        changes = {field: f'(old value={change[0]}, new_value={change[1]})'
+                   for field, change in self._config_changes().items()}
         logger.info(
             "Config saved",
             changes=changes
         )
 
+        for field in FIELDS:
+            self.config.config[field] = getattr(self, field).get()
         return self.config.save()
 
     def _config_changes(self) -> dict:
-        changes = {}
-        config = self.config.config
-
-        # Email attributes
-        if config['email_flag_club'] != self.email_flag_club.get():
-            changes['email_flag_club'] = self.email_flag_club.get()
-        if config['brought_forward_club'] != self.brought_forward_club.get():
-            changes['brought_forward_club'] = self.brought_forward_club.get()
-        if config['rebate_club'] != self.rebate_club.get():
-            changes['rebate_club'] = self.rebate_club.get()
-        if config['carried_forward_club'] != self.carried_forward_club.get():
-            changes['carried_forward_club'] = self.carried_forward_club.get()
-        if config['sessions_club'] != self.sessions_club.get():
-            changes['sessions_club'] = self.sessions_club.get()
-        if config['quarter_club'] != self.quarter_club.get():
-            changes['quarter_club'] = self.quarter_club.get()
-
-        # Dates
-        if config['year_start'] != self.year_start.get():
-            changes['year_start'] = self.year_start.get()
-
-        # Rebates
-        if config['payment_months'] != self.payment_months.get():
-            changes['payment_months'] = self.payment_months.get()
-        if config['rebate_f2f'] != self.rebate_f2f.get():
-            changes['rebate_f2f'] = self.rebate_f2f.get()
-        if config['rebate_bbo'] != self.rebate_bbo.get():
-            changes['rebate_bbo'] = self.rebate_bbo.get()
-
-        # Folders
-        if config['download_folder'] != self.download_folder.get():
-            changes['download_folder'] = self.download_folder.get()
-        if config['output_dir'] != self.output_dir.get():
-            changes['output_dir'] = self.output_dir.get()
-        return changes
+        stored = self.config.config
+        return {
+            field: (stored[field], getattr(self, field).get())
+            for field in FIELDS
+            if stored[field] != getattr(self, field).get()
+        }
 
     def _dismiss(self, *args):
         self.root.destroy()

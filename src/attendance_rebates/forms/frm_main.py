@@ -54,22 +54,23 @@ class MainFrame():
         frame.columnconfigure(0, weight=1)
 
         row = 0
-        button = IconButton(frame, 'Rebate report', 'report', self._rebate)
+        button = IconButton(
+            frame, 'Rebate report', 'report', False, self._rebate)
         button.grid(row=row, column=0)
         clickable_widget(button)
 
         row += 1
-        button = IconButton(frame, 'Email files', 'send', self._emails)
+        button = IconButton(frame, 'Email files', 'send', False, self._emails)
         button.grid(row=row, column=0)
         clickable_widget(button)
 
         row += 1
-        button = IconButton(frame, 'Verify', 'done', self._verify)
+        button = IconButton(frame, 'Verify', 'done', False, self._verify)
         button.grid(row=row, column=0)
         clickable_widget(button)
 
         row += 1
-        button = IconButton(frame, text.CLOSE, 'cancel', self._dismiss)
+        button = IconButton(frame, text.CLOSE, 'cancel', False, self._dismiss)
         button.grid(row=row, column=0)
         clickable_widget(button)
 

@@ -240,7 +240,7 @@ class ConfigFrame():
         entry = ttk.Entry(frame,  textvariable=self.download_folder)
         entry.grid(row=row, column=1, columnspan=2, sticky=tk.EW)
         button = IconButton(
-            frame, txt.OPEN, 'open', self._get_download_folder)
+            frame, txt.OPEN, 'open', False, self._get_download_folder)
         button.grid(row=row, column=3, sticky=tk.W, padx=PAD)
 
         row += 1
@@ -249,7 +249,7 @@ class ConfigFrame():
         entry = ttk.Entry(frame,  textvariable=self.output_dir)
         entry.grid(row=row, column=1, columnspan=2, sticky=tk.EW)
         button = IconButton(
-            frame, txt.OPEN, 'open', self._get_output_dir)
+            frame, txt.OPEN, 'open', False, self._get_output_dir)
         button.grid(row=row, column=3, sticky=tk.W, padx=PAD, pady=PAD)
         clickable_widget(button)
 

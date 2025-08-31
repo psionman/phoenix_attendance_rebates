@@ -5,7 +5,7 @@ from tkinter import font as tk_font, messagebox
 from clipboard import copy
 
 from psiutils.constants import PAD
-from psiutils.buttons import ButtonFrame, IconButton
+from psiutils.buttons import ButtonFrame
 from psiutils.widgets import separator_frame
 from psiutils.utilities import window_resize, geometry
 

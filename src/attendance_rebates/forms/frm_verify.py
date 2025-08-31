@@ -71,7 +71,7 @@ class VerifyFrame():
     def _button_frame(self, master: tk.Frame) -> tk.Frame:
         frame = ButtonFrame(master, tk.HORIZONTAL)
         frame.buttons = [
-            IconButton(frame, text.VERIFY, 'done', self._verify_files),
+            IconButton(frame, text.VERIFY, 'done', False, self._verify_files),
             frame.icon_button('exit', False, self._dismiss)
         ]
         return frame

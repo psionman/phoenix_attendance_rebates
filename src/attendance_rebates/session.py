@@ -8,7 +8,9 @@ from dateutil import relativedelta
 
 from attendance_rebates.config import get_config
 from attendance_rebates.constants import DDMMYYYY, YYYYMM
-import attendance_rebates.text as text
+from attendance_rebates.text import Text
+
+txt = Text()
 
 date_delta = relativedelta.relativedelta
 
@@ -53,15 +55,15 @@ class Session():
 
     def get_file_paths(self) -> None:
         """Populate file name variables."""
-        CF_PREFIX = text.CF_PREFIX
-        CSV = text.CSV
-        EMAIL = text.EMAIL
-        BBO = text.BBO
-        F2F = text.F2F
+        CF_PREFIX = txt.CF_PREFIX
+        CSV = txt.CSV
+        EMAIL = txt.EMAIL
+        BBO = txt.BBO
+        F2F = txt.F2F
 
         year_month = self.base_date.strftime(YYYYMM)
 
-        self.membership_file = f'{text.MEMBERSHIP}_{year_month}.{CSV}'
+        self.membership_file = f'{txt.MEMBERSHIP}_{year_month}.{CSV}'
 
         # Input file names
         self.f2f_input_file = f'{F2F}_{year_month}.{CSV}'
@@ -74,12 +76,12 @@ class Session():
         # e.g. cf_202411.csv
 
         # Report file names
-        report_file_name = f'{text.REBATE_REPORT}_{year_month}.{CSV}'
+        report_file_name = f'{txt.REBATE_REPORT}_{year_month}.{CSV}'
         self.f2f_report_file = f'{F2F}_{report_file_name}'
         self.bbo_report_file = f'{BBO}_{report_file_name}'
 
         # Rebate file names
-        rebate_file_name = f'{text.REBATE_FILE_PREFIX}_{year_month}.{CSV}'
+        rebate_file_name = f'{txt.REBATE_FILE_PREFIX}_{year_month}.{CSV}'
         self.f2f_rebate_file = f'{F2F}_{rebate_file_name}'
         self.bbo_rebate_file = f'{BBO}_{rebate_file_name}'
 

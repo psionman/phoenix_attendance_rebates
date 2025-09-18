@@ -6,14 +6,16 @@ from psiutils.buttons import IconButton
 from psiutils.constants import PAD
 from psiutils.utilities import window_resize, geometry
 
-from session import Session
-from config import get_config
+from attendance_rebates.session import Session
+from attendance_rebates.config import get_config
+from attendance_rebates.text import Text
+from attendance_rebates.menu import MainMenu
 
-import text
-from forms.frm_emails import EmailFrame
-from forms.frm_rebate import RebateFrame
-from forms.frm_verify import VerifyFrame
-from menu import MainMenu
+from attendance_rebates.forms.frm_emails import EmailFrame
+from attendance_rebates.forms.frm_rebate import RebateFrame
+from attendance_rebates.forms.frm_verify import VerifyFrame
+
+txt = Text(1)
 
 
 class MainFrame():
@@ -25,9 +27,10 @@ class MainFrame():
         self.show()
 
     def show(self):
+        # pylint: disable=no-member)
         root = self.root
         root.geometry(geometry(self.config, __file__))
-        root.title(text.TITLE)
+        root.title(txt.TITLE)
         root.bind('<Control-r>', self._rebate)
         root.bind('<Control-e>', self._emails)
         root.bind('<Control-v>', self._verify)
@@ -48,6 +51,7 @@ class MainFrame():
         sizegrip.grid(sticky=tk.SE)
 
     def _button_frame(self, container: tk.Frame) -> tk.Frame:
+        # pylint: disable=no-member)
         frame = ttk.Frame(container)
         for frame_row in range(5):
             frame.rowconfigure(frame_row, weight=1)
@@ -70,7 +74,7 @@ class MainFrame():
         clickable_widget(button)
 
         row += 1
-        button = IconButton(frame, text.CLOSE, 'cancel', self._dismiss)
+        button = IconButton(frame, txt.CLOSE, 'cancel', self._dismiss)
         button.grid(row=row, column=0)
         clickable_widget(button)
 

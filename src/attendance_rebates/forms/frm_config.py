@@ -4,7 +4,7 @@ from tkinter import filedialog
 
 from psiutils.widgets import separator_frame, clickable_widget
 from psiutils. buttons import ButtonFrame, IconButton
-from psiutils.utilities import window_resize, geometry, logger
+from psiutils.utilities import window_resize, geometry
 from psiutils.constants import PAD
 
 from attendance_rebates.constants import (
@@ -12,6 +12,7 @@ from attendance_rebates.constants import (
     CLUB_MIN, CLUB_MAX)
 from attendance_rebates.config import get_config
 import attendance_rebates.text as txt
+from attendance_rebates import logger
 
 
 FIELDS = {
@@ -240,7 +241,7 @@ class ConfigFrame():
         entry = ttk.Entry(frame,  textvariable=self.download_folder)
         entry.grid(row=row, column=1, columnspan=2, sticky=tk.EW)
         button = IconButton(
-            frame, txt.OPEN, 'open', False, self._get_download_folder)
+            frame, txt.OPEN, 'open', self._get_download_folder)
         button.grid(row=row, column=3, sticky=tk.W, padx=PAD)
 
         row += 1
@@ -249,7 +250,7 @@ class ConfigFrame():
         entry = ttk.Entry(frame,  textvariable=self.output_dir)
         entry.grid(row=row, column=1, columnspan=2, sticky=tk.EW)
         button = IconButton(
-            frame, txt.OPEN, 'open', False, self._get_output_dir)
+            frame, txt.OPEN, 'open', self._get_output_dir)
         button.grid(row=row, column=3, sticky=tk.W, padx=PAD, pady=PAD)
         clickable_widget(button)
 

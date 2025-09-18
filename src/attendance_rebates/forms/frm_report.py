@@ -176,8 +176,8 @@ class ReportFrame():
         frame = ButtonFrame(master, tk.HORIZONTAL)
         frame.buttons = [
             frame.icon_button(
-                'copy_clipboard', False, self._copy_summary_to_clipboard),
-            frame.icon_button('exit', False, self._dismiss)
+                'copy_clipboard', self._copy_summary_to_clipboard),
+            frame.icon_button('exit', self._dismiss)
         ]
         frame.enable(False)
         return frame

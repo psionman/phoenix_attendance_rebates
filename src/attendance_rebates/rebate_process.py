@@ -7,7 +7,7 @@ import datetime
 import csv
 from collections import namedtuple
 
-from psiutils.utilities import logger
+from attendance_rebates import logger
 
 from attendance_rebates.config import get_config
 from attendance_rebates.player import Player, get_players

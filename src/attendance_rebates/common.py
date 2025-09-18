@@ -3,7 +3,7 @@ import tkinter as tk
 from tkinter import filedialog, messagebox
 
 from psiutils.constants import CSV_FILE_TYPES
-from psiutils.utilities import logger
+from attendance_rebates import logger
 
 
 def get_csv_file(frame, title, initialdir, initialfile):

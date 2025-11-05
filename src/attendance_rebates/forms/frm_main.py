@@ -15,7 +15,7 @@ from attendance_rebates.forms.frm_emails import EmailFrame
 from attendance_rebates.forms.frm_rebate import RebateFrame
 from attendance_rebates.forms.frm_verify import VerifyFrame
 
-txt = Text(1)
+txt = Text()
 
 
 class MainFrame():

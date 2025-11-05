@@ -10,7 +10,10 @@ from psiutils.constants import PAD
 from config import get_config
 from session import Session
 from verify import verification
-import text
+from attendance_rebates.text import Text
+
+txt = Text()
+
 
 TITLE = 'Verify a player\'s data'
 TEST_EBU = '492064'
@@ -71,7 +74,7 @@ class VerifyFrame():
     def _button_frame(self, master: tk.Frame) -> tk.Frame:
         frame = ButtonFrame(master, tk.HORIZONTAL)
         frame.buttons = [
-            IconButton(frame, text.VERIFY, 'done', self._verify_files),
+            IconButton(frame, txt.VERIFY, 'done', self._verify_files),
             frame.icon_button('exit', self._dismiss)
         ]
         return frame

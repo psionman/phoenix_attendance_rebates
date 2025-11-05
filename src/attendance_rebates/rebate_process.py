@@ -180,12 +180,18 @@ class RebateProcess():
     def _write_bbo_output(self, writer: object, players: dict) -> None:
         writer.writeheader()
 
+        player_list = {}
         for player in players.values():
             if player.bbo_rebate:
-                writer.writerow({
-                    'BBO username': player.bbo_username,
-                    'Amount': player.bbo_rebate,
-                })
+                key = f'{int(player.bbo_rebate):02d}:{player.bbo_username}'
+                player_list[key] = player
+
+        for key in sorted(list(player_list)):
+            player = player_list[key]
+            writer.writerow({
+                'BBO username': player.bbo_username,
+                'Amount': player.bbo_rebate,
+            })
 
     def _generate_f2f_report(self, players: dict) -> None:
         """Create an output report for F2F."""

@@ -28,17 +28,17 @@ class Player():
     def show_all(self) -> None:
         print('')
         pad = 15
-        print(f'{'ebu':<{pad}}{self.ebu}')
-        print(f'{'bbo_bf':<{pad}}{self.bbo_bf}')
-        print(f'{'bbo_attendance':<{pad}}{self.bbo_attendance}')
-        print(f'{'bbo_cf':<{pad}}{self.bbo_cf}')
-        print(f'{'bbo_qualifying':<{pad}}{self.bbo_qualifying}')
-        print(f'{'bbo_rebate':<{pad}}{self.bbo_rebate}')
-        print(f'{'f2f_bf':<{pad}}{self.f2f_bf}')
-        print(f'{'f2f_attendance':<{pad}}{self.f2f_attendance}')
-        print(f'{'f2f_cf':<{pad}}{self.f2f_cf}')
-        print(f'{'f2f_qualifying':<{pad}}{self.f2f_qualifying}')
-        print(f'{'f2f_rebate':<{pad}}{self.f2f_rebate}')
+        print(f"{'ebu':<{pad}}{self.ebu}")
+        print(f"{'bbo_bf':<{pad}}{self.bbo_bf}")
+        print(f"{'bbo_attendance':<{pad}}{self.bbo_attendance}")
+        print(f"{'bbo_cf':<{pad}}{self.bbo_cf}")
+        print(f"{'bbo_qualifying':<{pad}}{self.bbo_qualifying}")
+        print(f"{'bbo_rebate':<{pad}}{self.bbo_rebate}")
+        print(f"{'f2f_bf':<{pad}}{self.f2f_bf}")
+        print(f"{'f2f_attendance':<{pad}}{self.f2f_attendance}")
+        print(f"{'f2f_cf':<{pad}}{self.f2f_cf}")
+        print(f"{'f2f_qualifying':<{pad}}{self.f2f_qualifying}")
+        print(f"{'f2f_rebate':<{pad}}{self.f2f_rebate}")
 
 
 def get_players(members: dict[str, object]) -> dict[int, Player]:

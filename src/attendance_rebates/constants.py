@@ -12,7 +12,7 @@ APP_TITLE = 'Players\'  attendance rebates'
 CONFIG_PATH = Path(user_config_dir(APP_NAME, APP_AUTHOR), 'config.toml')
 USER_DATA_DIR = user_data_dir(APP_NAME, APP_AUTHOR)
 CONFIG_TEXT = 'Preferences'
-ICON_FILE = Path(Path(__file__).parent, 'images/icon.png')
+ICON_FILE = Path(Path(__file__).parent, 'images', 'icon.png')
 
 # Colours
 INFO_COLOUR = 'green'

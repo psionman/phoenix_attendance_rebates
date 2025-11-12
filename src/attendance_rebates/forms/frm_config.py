@@ -11,9 +11,10 @@ from attendance_rebates.constants import (
     APP_TITLE, REBATE_MAXIMUM, REBATE_INCREMENT, ALLOWED_PAYMENT_MONTHS,
     CLUB_MIN, CLUB_MAX)
 from attendance_rebates.config import get_config
-import attendance_rebates.text as txt
+from attendance_rebates.text import Text
 from attendance_rebates import logger
 
+txt = Text()
 
 FIELDS = {
     "year_start": tk.IntVar,

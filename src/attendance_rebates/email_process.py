@@ -52,10 +52,7 @@ class EmailProcess():
         self.carried_forward_club = f'{txt.CLUB}{config.carried_forward_club}'
         self.quarter_club = f'{txt.CLUB}{config.quarter_club}'
 
-        self.mode = 'F2F'
-        if self.context.bbo_payment_file:
-            self.mode = 'BBO'
-
+        self.mode = 'BBO' if self.context.bbo_payment_file else 'F2F'
         self.OK = 1
 
     def create_files(self) -> None:

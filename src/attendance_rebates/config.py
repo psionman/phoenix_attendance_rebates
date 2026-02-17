@@ -21,6 +21,7 @@ DEFAULT_CONFIG = {
     'rebate_f2f': 250,
     'qualifying_attendances': 10,
     'payment_months': 3,
+    'download_folder': '',
     'geometry': {},
 }
 
